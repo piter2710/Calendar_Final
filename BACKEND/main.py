@@ -1,6 +1,6 @@
 import json
 from typing import *
-
+from sqlalchemy.exc import IntegrityError
 from fastapi import FastAPI, HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware
 import datetime
@@ -141,8 +141,26 @@ class EventCountResponse(BaseModel):
 Base.metadata.create_all(bind=engine)
 @app.on_event("startup")
 async def startup_event():
-    with open (token_file, 'w') as tk:
-                tk.write('')
+    db: Session = next(get_db())
+    with open(token_file, 'w') as tk:
+        tk.write('')
+    admin_username = "admin@admin.com"
+    admin_password = "admin123"
+
+    admin_user = db.query(User).filter_by(username=admin_username).first()
+        
+    if admin_user is None:
+        try:
+            new_user = User(
+                username=admin_username,
+                password=get_hashed_password(admin_password)  # Hash the password
+            )
+            db.add(new_user)
+            db.commit()
+            print("Admin user created successfully.")
+        except IntegrityError:
+            db.rollback()  # Rollback in case of integrity error
+            print("An error occurred while creating the admin user.")
 @app.get("/events", status_code=HTTP_200_OK)
 async def read_events(db: db_dependency):
     return db.query(Event).order_by(Event.created_at).all()
