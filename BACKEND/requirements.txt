@@ -1,0 +1,12 @@
+uvicorn
+fastapi
+starlette
+google-auth-oauthlib
+google-auth
+google-api-python-client
+sqlalchemy
+passlib[bcrypt]
+python-jose
+pydantic
+python-multipart
+psycopg2
