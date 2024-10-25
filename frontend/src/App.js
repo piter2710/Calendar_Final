@@ -996,12 +996,9 @@ const toggleIsOpenCreate = () =>{
                   lastEvents.map((event) => (
                       <div key={event.id}>
                         <h2>{event.title}</h2>
-                        <p>Początek: {new Date(event.start_date).toLocaleString()}</p>
-                        <p>Koniec: {new Date(event.end_date).toLocaleString()}</p>
                         <p>Akcja: {event.action}</p>
-                        <p>
-                          Utworzone o: {new Date(event.created_at).toLocaleString()}
-                        </p>
+                        
+
                         <button className="event-action-btn delete-btn" onClick={() => deleteHistoryElement(event.id)}>Usuń ten element z histori</button>
                         <hr/>
                       </div>
